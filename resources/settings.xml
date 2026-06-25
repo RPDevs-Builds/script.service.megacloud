@@ -20,7 +20,7 @@
                 </setting>
                 <setting id="keys_url" type="string" label="30003">
                     <level>1</level>
-                    <default>https://raw.githubusercontent.com/yogesh-hacker/MegacloudKeys/refs/heads/main/keys.json</default>
+                    <default>https://raw.githubusercontent.com/RPDevs-Builds/script.service.megacloud/master/keys/keys.json</default>
                     <control type="edit" format="string"/>
                 </setting>
             </group>

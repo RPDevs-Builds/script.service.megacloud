@@ -2,7 +2,7 @@ name: Megacloud Auto-Sync & Build
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Run daily
+    - cron: '0 */6 * * *' # Run every 6 hours to keep keys fresh
   push:
     branches:
       - main
@@ -28,6 +28,9 @@ jobs:
         with:
           python-version: '3.10'
 
+      # -----------------------------------------------------------------------
+      # Step 1: Sync upstream mega-embed-2 crypto constants
+      # -----------------------------------------------------------------------
       - name: Run transform script
         id: transform
         run: |
@@ -44,18 +47,54 @@ jobs:
             exit 1
           fi
 
+      # -----------------------------------------------------------------------
+      # Step 2: Fetch and mirror decryption keys from upstream sources
+      # -----------------------------------------------------------------------
+      # The original keys repo (yogesh-hacker/MegacloudKeys) was DMCA'd.
+      # This step attempts to fetch keys from known mirrors and stores a
+      # local copy in keys/keys.json so our addon can self-host them via
+      # raw.githubusercontent.com, independent of any single upstream.
+      # -----------------------------------------------------------------------
+      - name: Fetch decryption keys
+        id: fetch_keys
+        run: |
+          set +e
+          python tools/fetch_keys.py
+          exit_code=$?
+          set -e
+          if [ $exit_code -eq 0 ]; then
+            echo "keys_updated=true" >> $GITHUB_OUTPUT
+          else
+            echo "keys_updated=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Configure Git
-        if: steps.transform.outputs.changes_made == 'true'
+        if: steps.transform.outputs.changes_made == 'true' || steps.fetch_keys.outputs.keys_updated == 'true'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Commit changes
-        if: steps.transform.outputs.changes_made == 'true'
+        if: steps.transform.outputs.changes_made == 'true' || steps.fetch_keys.outputs.keys_updated == 'true'
         run: |
-          git add resources/lib/megacloud.py addon.xml
-          git commit -m "Auto-sync with upstream mega-embed-2 constants"
-          git push
+          git add resources/lib/megacloud.py addon.xml keys/keys.json
+          # Only commit if there are actually staged changes
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            COMMIT_MSG="Auto-sync: "
+            if [ "${{ steps.transform.outputs.changes_made }}" == "true" ]; then
+              COMMIT_MSG="${COMMIT_MSG}upstream crypto constants"
+            fi
+            if [ "${{ steps.fetch_keys.outputs.keys_updated }}" == "true" ]; then
+              if [ "${{ steps.transform.outputs.changes_made }}" == "true" ]; then
+                COMMIT_MSG="${COMMIT_MSG} + "
+              fi
+              COMMIT_MSG="${COMMIT_MSG}decryption keys"
+            fi
+            git commit -m "$COMMIT_MSG"
+            git push
+          fi
 
       - name: Build Zip Release
         id: build_zip

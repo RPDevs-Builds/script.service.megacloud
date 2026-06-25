@@ -14,7 +14,7 @@ def get_settings():
         port = 4000
     
     autostart = ADDON.getSetting('autostart') != 'false'
-    keys_url = ADDON.getSetting('keys_url') or "https://raw.githubusercontent.com/yogesh-hacker/MegacloudKeys/refs/heads/main/keys.json"
+    keys_url = ADDON.getSetting('keys_url') or "https://raw.githubusercontent.com/RPDevs-Builds/script.service.megacloud/master/keys/keys.json"
     
     fs_enable = ADDON.getSetting('fs_enable') == 'true'
     fs_url = ADDON.getSetting('fs_url') or "http://localhost:8191/v1"

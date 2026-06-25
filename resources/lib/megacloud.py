@@ -148,7 +148,7 @@ def fetch_via_flaresolverr(url, referer, fs_url, fs_timeout):
 
 def extract_megacloud_sources(embed_url: str, referer: str = "https://hianime.to/", keys_url: str = None, fs_enable: bool = False, fs_url: str = "http://localhost:8191/v1", fs_timeout: int = 30):
     if not keys_url:
-        keys_url = "https://raw.githubusercontent.com/yogesh-hacker/MegacloudKeys/refs/heads/main/keys.json"
+        keys_url = "https://raw.githubusercontent.com/RPDevs-Builds/script.service.megacloud/master/keys/keys.json"
         
     user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0"
     
