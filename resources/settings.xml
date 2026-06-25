@@ -34,9 +34,6 @@
                     <level>0</level>
                     <default>http://localhost:8191/v1</default>
                     <control type="edit" format="string"/>
-                    <dependencies>
-                        <dependency type="enable" setting="fs_enable" expression="true"/>
-                    </dependencies>
                 </setting>
                 <setting id="fs_timeout" type="integer" label="30007">
                     <level>1</level>
@@ -47,12 +44,11 @@
                         <step>5</step>
                     </constraints>
                     <control type="slider" format="integer"/>
-                    <dependencies>
-                        <dependency type="enable" setting="fs_enable" expression="true"/>
-                    </dependencies>
                 </setting>
             </group>
-            <group id="3" label="Advanced">
+        </category>
+        <category id="advanced" label="Advanced">
+            <group id="1" label="Advanced">
                 <setting id="enable_log" type="boolean" label="Enable Debug Logging">
                     <level>0</level>
                     <default>false</default>
@@ -62,9 +58,6 @@
                     <level>0</level>
                     <default>false</default>
                     <control type="toggle"/>
-                    <dependencies>
-                        <dependency type="enable" setting="enable_log" expression="true"/>
-                    </dependencies>
                 </setting>
                 <setting id="log_level" type="integer" label="Log Level">
                     <level>0</level>
@@ -78,9 +71,6 @@
                         </options>
                     </constraints>
                     <control type="list" format="integer"/>
-                    <dependencies>
-                        <dependency type="enable" setting="enable_log" expression="true"/>
-                    </dependencies>
                 </setting>
                 <setting id="log_path" type="path" label="Log Folder">
                     <level>1</level>
@@ -89,9 +79,6 @@
                         <allowempty>true</allowempty>
                     </constraints>
                     <control type="button" format="path"/>
-                    <dependencies>
-                        <dependency type="enable" setting="enable_log" expression="true"/>
-                    </dependencies>
                 </setting>
             </group>
         </category>
