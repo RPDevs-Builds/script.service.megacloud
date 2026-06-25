@@ -35,7 +35,7 @@
                     <default>http://localhost:8191/v1</default>
                     <control type="edit" format="string"/>
                     <dependencies>
-                        <dependency setting="fs_enable" expression="true"/>
+                        <dependency type="enable" setting="fs_enable" expression="true"/>
                     </dependencies>
                 </setting>
                 <setting id="fs_timeout" type="integer" label="30007">
@@ -48,7 +48,7 @@
                     </constraints>
                     <control type="slider" format="integer"/>
                     <dependencies>
-                        <dependency setting="fs_enable" expression="true"/>
+                        <dependency type="enable" setting="fs_enable" expression="true"/>
                     </dependencies>
                 </setting>
             </group>
@@ -63,10 +63,10 @@
                     <default>false</default>
                     <control type="toggle"/>
                     <dependencies>
-                        <dependency setting="enable_log" expression="true"/>
+                        <dependency type="enable" setting="enable_log" expression="true"/>
                     </dependencies>
                 </setting>
-                <setting id="log_level" type="select" label="Log Level">
+                <setting id="log_level" type="integer" label="Log Level">
                     <level>0</level>
                     <default>1</default>
                     <constraints>
@@ -79,7 +79,7 @@
                     </constraints>
                     <control type="list" format="integer"/>
                     <dependencies>
-                        <dependency setting="enable_log" expression="true"/>
+                        <dependency type="enable" setting="enable_log" expression="true"/>
                     </dependencies>
                 </setting>
                 <setting id="log_path" type="path" label="Log Folder">
@@ -90,7 +90,7 @@
                     </constraints>
                     <control type="button" format="path"/>
                     <dependencies>
-                        <dependency setting="enable_log" expression="true"/>
+                        <dependency type="enable" setting="enable_log" expression="true"/>
                     </dependencies>
                 </setting>
             </group>
