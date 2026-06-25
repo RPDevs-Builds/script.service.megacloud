@@ -7,6 +7,9 @@ import urllib.request
 import urllib.parse
 from resources.lib.logger import get_logger
 
+# We use the custom Python logger (RotatingFileHandler) instead of Kodi's native `xbmc.log`.
+# This allows for a clean, independent sub-service log that doesn't spam Kodi's main logs
+# with constant polling and verbose server messages.
 log = get_logger()
 
 class MegacloudDecryptor:
