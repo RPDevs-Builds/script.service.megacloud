@@ -107,7 +107,12 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
     def do_logs_page(self):
         import xbmcaddon
-        addon_path = xbmcaddon.Addon('script.service.megacloud').getAddonInfo('path')
+        addon = xbmcaddon.Addon('script.service.megacloud')
+        if addon.getSetting('enable_remote_log_viewer') != 'true':
+            self.send_error(403, "Remote log viewer is disabled.")
+            return
+            
+        addon_path = addon.getAddonInfo('path')
         html_path = os.path.join(addon_path, "resources", "templates", "webtail.html")
         self.send_response(200)
         self.send_header("Content-Type", "text/html")
@@ -122,6 +127,10 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
         import xbmcaddon
         import xbmcvfs
         addon = xbmcaddon.Addon('script.service.megacloud')
+        if addon.getSetting('enable_remote_log_viewer') != 'true':
+            self.send_error(403, "Remote log viewer is disabled.")
+            return
+            
         log_path = addon.getSetting('log_path') or ""
         if not log_path or not log_path.strip():
             log_path = xbmcvfs.translatePath(addon.getAddonInfo('profile'))

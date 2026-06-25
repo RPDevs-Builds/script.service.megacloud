@@ -53,10 +53,18 @@
                 </setting>
             </group>
             <group id="3" label="Advanced">
-                <setting id="enable_log" type="boolean" label="Enable Custom Logging">
+                <setting id="enable_log" type="boolean" label="Enable Debug Logging">
                     <level>0</level>
-                    <default>true</default>
+                    <default>false</default>
                     <control type="toggle"/>
+                </setting>
+                <setting id="enable_remote_log_viewer" type="boolean" label="Enable Remote Log Viewer">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+                        <dependency setting="enable_log" expression="true"/>
+                    </dependencies>
                 </setting>
                 <setting id="log_level" type="select" label="Log Level">
                     <level>0</level>
