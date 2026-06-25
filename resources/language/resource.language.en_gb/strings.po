@@ -1,0 +1,50 @@
+# Kodi Media Center language file
+# Addon Name: Megacloud Solver
+# Addon id: script.service.megacloud
+# Addon Provider: Antigravity
+
+msgid ""
+msgstr ""
+"Project-Id-Version: Megacloud Solver\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Antigravity\n"
+"Language-Team: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "General"
+msgstr "General"
+
+msgctxt "#30001"
+msgid "Port"
+msgstr "Port"
+
+msgctxt "#30002"
+msgid "Autostart Service"
+msgstr "Autostart Service"
+
+msgctxt "#30003"
+msgid "Decryption Keys GitHub URL"
+msgstr "Decryption Keys GitHub URL"
+
+msgctxt "#30004"
+msgid "FlareSolverr Bypass"
+msgstr "FlareSolverr Bypass"
+
+msgctxt "#30005"
+msgid "Enable FlareSolverr"
+msgstr "Enable FlareSolverr"
+
+msgctxt "#30006"
+msgid "FlareSolverr Service URL"
+msgstr "FlareSolverr Service URL"
+
+msgctxt "#30007"
+msgid "FlareSolverr Timeout (s)"
+msgstr "FlareSolverr Timeout (s)"
+

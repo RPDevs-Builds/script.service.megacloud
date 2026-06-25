@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="script.service.megacloud" name="Megacloud Solver" provider-name="Antigravity" version="1.0.0">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+    </requires>
+    <extension point="xbmc.service" library="service.py"/>
+    <extension point="xbmc.python.script" library="default.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.python.module" library="resources/lib/"/>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <license>GPL-2.0-or-later</license>
+        <summary lang="en_GB">Standalone local Megacloud decrypter and resolver HTTP server.</summary>
+        <description lang="en_GB">Exposes an HTTP server on port 4000 to resolve Megacloud/Vidcloud embed URLs natively inside Kodi. Other add-ons can configure their solver URL to use this local service.</description>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
+    </extension>
+</addon>
