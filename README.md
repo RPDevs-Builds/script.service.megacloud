@@ -35,3 +35,9 @@ The service will process the request, bypass Cloudflare (via FlareSolverr), deco
 
 ## Upstream Synchronization
 The core decryption logic in this add-on (`megacloud.py`) is powered by Python and is kept 1:1 with the original JavaScript logic via GitHub Actions. If the algorithm changes, the CI/CD pipeline uses `tools/transform.py` to automatically extract the new cryptographic parameters and rebuild the Python addon within 24 hours.
+
+## Credits & Acknowledgements
+This add-on would not be possible without the incredible work of the original developers. A massive thank you to [Geordi La Forge's mega-embed-2](https://bitbucket.org/geordilaforge/mega-embed-2) for pioneering the core JavaScript algorithm that this Python port is built upon.
+
+## License
+This project is licensed under the GPL-3.0 License. See the [LICENSE](LICENSE) file for details.

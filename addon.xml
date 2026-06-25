@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="script.service.megacloud" name="Megacloud Solver" provider-name="RPDev" version="1.0.0">
+<addon id="script.service.megacloud" name="Megacloud Solver" provider-name="RPDev" version="1.0.2">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
     </requires>
@@ -10,7 +10,7 @@
     <extension point="xbmc.python.module" library="resources/lib/"/>
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
-        <license>GPL-2.0-or-later</license>
+        <license>GPL-3.0-only</license>
         <summary lang="en_GB">Standalone local Megacloud decrypter and resolver HTTP server.</summary>
         <description lang="en_GB">Exposes an HTTP server on port 4000 to resolve Megacloud/Vidcloud embed URLs natively inside Kodi. Other add-ons can configure their solver URL to use this local service.</description>
         <assets>
