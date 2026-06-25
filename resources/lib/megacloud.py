@@ -5,6 +5,9 @@ import re
 import json
 import urllib.request
 import urllib.parse
+from resources.lib.logger import get_logger
+
+log = get_logger()
 
 class MegacloudDecryptor:
     def __init__(self):
@@ -169,6 +172,7 @@ def extract_megacloud_sources(embed_url: str, referer: str = "https://hianime.to
             cookies = solution.get("cookies", [])
             ua = solution.get("userAgent", user_agent)
         except Exception as e:
+            log.error(f"FlareSolverr fetch failed for {embed_url}: {str(e)}")
             raise Exception("FlareSolverr fetch failed: " + str(e))
     else:
         req = urllib.request.Request(embed_url, headers={
@@ -189,6 +193,7 @@ def extract_megacloud_sources(embed_url: str, referer: str = "https://hianime.to
             nonce = "".join(match2.groups())
             
     if not nonce:
+        log.error("Could not find nonce in embed page")
         raise Exception("Could not find nonce in embed page")
         
     get_sources_url = f"{get_sources_base}{xrax}&_k={nonce}"

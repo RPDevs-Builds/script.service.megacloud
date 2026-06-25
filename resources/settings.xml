@@ -52,6 +52,40 @@
                     </dependencies>
                 </setting>
             </group>
+            <group id="3" label="Advanced">
+                <setting id="enable_log" type="boolean" label="Enable Custom Logging">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting id="log_level" type="select" label="Log Level">
+                    <level>0</level>
+                    <default>1</default>
+                    <constraints>
+                        <options>
+                            <option label="Debug">0</option>
+                            <option label="Info">1</option>
+                            <option label="Warning">2</option>
+                            <option label="Error">3</option>
+                        </options>
+                    </constraints>
+                    <control type="list" format="integer"/>
+                    <dependencies>
+                        <dependency setting="enable_log" expression="true"/>
+                    </dependencies>
+                </setting>
+                <setting id="log_path" type="path" label="Log Folder">
+                    <level>1</level>
+                    <default>special://profile/addon_data/script.service.megacloud/</default>
+                    <constraints>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="button" format="path"/>
+                    <dependencies>
+                        <dependency setting="enable_log" expression="true"/>
+                    </dependencies>
+                </setting>
+            </group>
         </category>
     </section>
 </settings>

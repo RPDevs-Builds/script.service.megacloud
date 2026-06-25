@@ -4,7 +4,14 @@ import re
 import urllib.parse as urlparse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
+import os
+import shutil
+import urllib.parse
 from resources.lib.megacloud import extract_megacloud_sources
+from resources.lib.logger import get_logger
+from resources.lib.logreader import LogReader
+
+log = get_logger()
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
@@ -24,6 +31,14 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             if self.url.path == "/favicon.ico":
                 self.send_response(404)
                 self.end_headers()
+                return
+
+            if self.url.path == "/logs":
+                self.do_logs_page()
+                return
+                
+            if self.url.path == "/logs/tail":
+                self.do_logs_tail()
                 return
 
             # Route 2: GET /get?url=<embedUrl>
@@ -90,9 +105,53 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
     def send_error_json(self, status_code, message):
         self.send_json(status_code, {"Error": message})
 
-    def log_message(self, fmt, *args):
-        # Silence default standard output request logging to avoid filling Kodi logs
-        pass
+    def do_logs_page(self):
+        import xbmcaddon
+        addon_path = xbmcaddon.Addon('script.service.megacloud').getAddonInfo('path')
+        html_path = os.path.join(addon_path, "resources", "templates", "webtail.html")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html")
+        self.send_header("Content-Length", str(os.path.getsize(html_path)))
+        self.send_header("Connection", "keep-alive")
+        self.end_headers()
+        with open(html_path, "rb") as f:
+            shutil.copyfileobj(f, self.wfile)
+
+    def do_logs_tail(self):
+        # We need the current log path
+        import xbmcaddon
+        import xbmcvfs
+        addon = xbmcaddon.Addon('script.service.megacloud')
+        log_path = addon.getSetting('log_path') or ""
+        if not log_path or not log_path.strip():
+            log_path = xbmcvfs.translatePath(addon.getAddonInfo('profile'))
+        else:
+            log_path = xbmcvfs.translatePath(log_path)
+            
+        megacloud_log = os.path.join(log_path, 'megacloud.log')
+        
+        if not os.path.exists(megacloud_log):
+            self.send_error(404, "Log file not found. Ensure logging is enabled.")
+            return
+
+        parsed_url = urllib.parse.urlparse(self.path)
+        query = dict(urllib.parse.parse_qsl(parsed_url.query))
+        offset = int(query.get("offset", 0))
+        
+        reader = LogReader(megacloud_log)
+        reader.set_offset(offset)
+        content = reader.tail().encode('utf-8')
+
+        self.send_response(200)
+        self.send_header("Content-Type", "text/plain")
+        self.send_header("Content-Length", str(len(content)))
+        self.send_header("X-Seek-Offset", str(reader.get_offset()))
+        self.end_headers()
+        self.wfile.write(content)
+
+    def log_message(self, format, *args):
+        # Pipe standard HTTP server logs to our custom logger at DEBUG level
+        log.debug(f"{self.address_string()} - - [{self.log_date_time_string()}] {format%args}")
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     """Handle requests in a separate thread."""

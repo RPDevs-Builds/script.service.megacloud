@@ -3,6 +3,9 @@ import xbmc
 import xbmcaddon
 import threading
 from resources.lib.httpserver import ThreadedHTTPServer, HTTPRequestHandler
+from resources.lib.logger import setup_logger, get_logger
+
+log = get_logger()
 
 ADDON = xbmcaddon.Addon('script.service.megacloud')
 
@@ -24,7 +27,15 @@ def get_settings():
     except ValueError:
         fs_timeout = 30
         
-    return port, autostart, keys_url, fs_enable, fs_url, fs_timeout
+    enable_log = ADDON.getSetting('enable_log') != 'false'
+    try:
+        log_level_str = ADDON.getSetting('log_level')
+        log_level = int(log_level_str) if log_level_str else 1
+    except ValueError:
+        log_level = 1
+    log_path = ADDON.getSetting('log_path') or ""
+        
+    return port, autostart, keys_url, fs_enable, fs_url, fs_timeout, enable_log, log_level, log_path
 
 class HTTPServerRunner(threading.Thread):
     def __init__(self, port, keys_url, fs_enable, fs_url, fs_timeout):
@@ -43,14 +54,14 @@ class HTTPServerRunner(threading.Thread):
             self._server.fs_enable = self._fs_enable
             self._server.fs_url = self._fs_url
             self._server.fs_timeout = self._fs_timeout
-            xbmc.log(f"[script.service.megacloud] Server started at port {self._port} (FlareSolverr enabled: {self._fs_enable})", xbmc.LOGINFO)
+            log.info(f"Server started at port {self._port} (FlareSolverr enabled: {self._fs_enable})")
             self._server.serve_forever()
         except Exception as e:
-            xbmc.log(f"[script.service.megacloud] Server error: {str(e)}", xbmc.LOGERROR)
+            log.error(f"Server error: {str(e)}")
         finally:
             if self._server:
                 self._server.server_close()
-            xbmc.log("[script.service.megacloud] Server closed", xbmc.LOGINFO)
+            log.info("Server closed")
 
     def stop(self):
         if self._server:
@@ -60,14 +71,15 @@ class HTTPServerRunner(threading.Thread):
 class MegacloudServiceMonitor(xbmc.Monitor):
     def __init__(self):
         super(MegacloudServiceMonitor, self).__init__()
-        self._port, self._autostart, self._keys_url, self._fs_enable, self._fs_url, self._fs_timeout = get_settings()
+        self._port, self._autostart, self._keys_url, self._fs_enable, self._fs_url, self._fs_timeout, self._enable_log, self._log_level, self._log_path = get_settings()
+        setup_logger(self._enable_log, self._log_level, self._log_path)
         self._server_runner = None
         self._lock = threading.Lock()
 
     def start_server(self):
         with self._lock:
             if self._autostart and self._server_runner is None:
-                xbmc.log(f"[script.service.megacloud] Launching server on port {self._port}", xbmc.LOGINFO)
+                log.info(f"Launching server on port {self._port}")
                 self._server_runner = HTTPServerRunner(
                     self._port, self._keys_url, self._fs_enable, self._fs_url, self._fs_timeout
                 )
@@ -76,13 +88,23 @@ class MegacloudServiceMonitor(xbmc.Monitor):
     def stop_server(self):
         with self._lock:
             if self._server_runner is not None:
-                xbmc.log("[script.service.megacloud] Stopping server", xbmc.LOGINFO)
+                log.info("Stopping server")
                 self._server_runner.stop()
                 self._server_runner.join()
                 self._server_runner = None
 
     def onSettingsChanged(self):
-        new_port, new_autostart, new_keys_url, new_fs_enable, new_fs_url, new_fs_timeout = get_settings()
+        new_port, new_autostart, new_keys_url, new_fs_enable, new_fs_url, new_fs_timeout, new_enable_log, new_log_level, new_log_path = get_settings()
+        
+        # Check if logging settings changed
+        if (new_enable_log != self._enable_log or 
+            new_log_level != self._log_level or 
+            new_log_path != self._log_path):
+            self._enable_log = new_enable_log
+            self._log_level = new_log_level
+            self._log_path = new_log_path
+            setup_logger(self._enable_log, self._log_level, self._log_path)
+            log.info("Logging configuration reloaded")
         
         restart = False
         with self._lock:
@@ -95,7 +117,7 @@ class MegacloudServiceMonitor(xbmc.Monitor):
                 restart = True
                 
         if restart:
-            xbmc.log("[script.service.megacloud] Settings changed, restarting server...", xbmc.LOGINFO)
+            log.info("Settings changed, restarting server...")
             self.stop_server()
             with self._lock:
                 self._port = new_port
