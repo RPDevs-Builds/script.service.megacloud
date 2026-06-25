@@ -19,7 +19,7 @@
                     <control type="toggle"/>
                 </setting>
                 <setting id="keys_url" type="string" label="30003">
-                    <level>1</level>
+                    <level>0</level>
                     <default>https://raw.githubusercontent.com/RPDevs-Builds/script.service.megacloud/master/keys/keys.json</default>
                     <control type="edit" format="string"/>
                 </setting>
@@ -36,7 +36,7 @@
                     <control type="edit" format="string"/>
                 </setting>
                 <setting id="fs_timeout" type="integer" label="30007">
-                    <level>1</level>
+                    <level>0</level>
                     <default>30</default>
                     <constraints>
                         <minimum>5</minimum>
@@ -73,7 +73,7 @@
                     <control type="list" format="integer"/>
                 </setting>
                 <setting id="log_path" type="path" label="30012">
-                    <level>1</level>
+                    <level>0</level>
                     <default>special://profile/addon_data/script.service.megacloud/</default>
                     <constraints>
                         <allowempty>true</allowempty>
